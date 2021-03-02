@@ -1,19 +1,20 @@
 package com.example.simpleenterrecord;
 
-public class Item {
+public class Item_tem {
     String num;
     String time;
     String phoneNum;
     String city;
+    String temperature;
 
-    public Item(String num, String time, String phoneNum, String city) {
+    public Item_tem(String num, String time, String phoneNum, String city, String temperature) {
         this.num = num;
         this.time = time;
         this.phoneNum = phoneNum;
         this.city = city;
-
+        this.temperature = temperature;
     }
-    public Item(){};
+    public Item_tem(){};
 
     public String getNum() {
         return num;
@@ -47,4 +48,7 @@ public class Item {
         this.city = city;
     }
 
+    public String getTemperature() { return temperature; }
+
+    public void setTemperature(String temperature) { this.temperature = temperature; }
 }

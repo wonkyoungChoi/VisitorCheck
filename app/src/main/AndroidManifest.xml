@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".RecordPage"/>
         <activity android:name=".admin" />
+        <activity android:name=".setting"/>
     </application>
 
 </manifest>

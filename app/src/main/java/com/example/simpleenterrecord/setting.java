@@ -1,8 +1,5 @@
 package com.example.simpleenterrecord;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,60 +8,83 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class setting extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    EditText password, name, message;
+    Button city, district, start, temperature;
+    ImageButton back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.setting);
+
+        sharedPreferences= getSharedPreferences("test", MODE_PRIVATE);    // test 이름의 기본모드 설정, 만약 test key값이 있다면 해당 값을 불러옴.
+        String passwordSet = sharedPreferences.getString("password","");
+        String nameSet = sharedPreferences.getString("name","");
+        String messageSet = sharedPreferences.getString("message","");
+        String citySet = sharedPreferences.getString("city", "");
+        String districtSet = sharedPreferences.getString("district", "");
+        String temSet = sharedPreferences.getString("check", "");
+
+        password = (EditText) findViewById(R.id.password);
+        name = (EditText) findViewById(R.id.name);
+        message = (EditText) findViewById(R.id.message);
+        city = (Button) findViewById(R.id.city);
+        district = (Button) findViewById(R.id.district);
+        start = (Button) findViewById(R.id.start);
+        temperature = (Button) findViewById(R.id.temperature);
 
 
-        final Button city = (Button) findViewById(R.id.city);
-        final Button district = (Button) findViewById(R.id.district);
-        final Button temperature = (Button) findViewById(R.id.temperature);
-        final Button start = (Button) findViewById(R.id.start);
-        final EditText password = (EditText) findViewById(R.id.password);
-        final EditText name = (EditText) findViewById(R.id.name);
-        final EditText message = (EditText) findViewById(R.id.message);
+        password.setText(passwordSet);
+        name.setText(nameSet);
+        message.setText(messageSet);
+        city.setText(citySet);
+        district.setText(districtSet);
+        temperature.setText(temSet);
 
-        sharedPreferences = getSharedPreferences("test", MODE_PRIVATE); // test 이름의 기본모드 설정
-        if(!sharedPreferences.getString("password", "").equals("")) {
-            finish();
-            Intent intent = new Intent(getApplicationContext(), RecordPage.class);
-            startActivity(intent);
-        } else {
-            start.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor = sharedPreferences.edit(); //sharedPreferences를 제어할 editor를 선언
-                    if(password.getText().toString()!=null && name.getText().toString()!=null &&
-                            message.getText().toString()!=null && !district.getText().toString().equals("시•군•구 선택") && 
-                            !city.getText().toString().equals("시•도 선택") && !temperature.getText().toString().equals("발열체크 여부")) {
-                        editor.putString("password", password.getText().toString());
-                        editor.putString("name", name.getText().toString());
-                        editor.putString("message", message.getText().toString());
-                        editor.putString("district", district.getText().toString());
-                        editor.putString("city", city.getText().toString()); // key,value 형식으로 저장
-                        editor.putString("check", temperature.getText().toString());
-                        editor.apply();    //최종 커밋. 커밋을 해야 저장이 된다.
-                        Toast.makeText(getApplicationContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                        finish();
-                        Intent intent = new Intent(getApplicationContext(), RecordPage.class);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "모든값을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                    }
+        back =  (ImageButton) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor = sharedPreferences.edit(); //sharedPreferences를 제어할 editor를 선언
+                if(password.getText().toString()!=null && name.getText().toString()!=null &&
+                        message.getText().toString()!=null && !district.getText().toString().equals("시•군•구 선택") &&
+                        !city.getText().toString().equals("시•도 선택")) {
+                    editor.putString("password", password.getText().toString());
+                    editor.putString("name", name.getText().toString());
+                    editor.putString("message", message.getText().toString());
+                    editor.putString("district", district.getText().toString());
+                    editor.putString("city", city.getText().toString()); // key,value 형식으로 저장
+                    editor.putString("check", temperature.getText().toString());
+                    editor.apply();    //최종 커밋. 커밋을 해야 저장이 된다.
+                    Toast.makeText(getApplicationContext(), "변경되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                    Intent intent = new Intent(getApplicationContext(), admin.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "모든값을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
+            }
+        });
 
         temperature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder dlg = new AlertDialog.Builder(setting.this);
                 dlg.setTitle("발열체크 여부 선택");
                 final String[] check = new String[]{"발열체크 O", "발열체크 X"};
 
@@ -80,10 +100,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         city.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View view) {
-
-                AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder dlg = new AlertDialog.Builder(setting.this);
                 dlg.setTitle("시•도 선택"); //제목
                 final String[] cityList = new String[]{"강원도", "경기도", "경상남도", "경상북도", "광주광역시", "대구광역시", "대전광역시", "부산광역시", "서울특별시", "세종특별자치시", "울산광역시"};
 
@@ -117,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                         "안안시 만안구", "양주시", "양평군", "여주시", "연천군", "오산시", "용인시", "용인시 기흥구", "용인시 수지구", "용인시 처인구",
                         "의왕시", "의정부시", "이천시", "파주시", "평택시", "포천시", "하남시", "화성시"};
 
-                final String[] gyoungnamList = new String[]{"거제시", "거창군", "고성군", "김해시", "남해군", "밀양시", "사천시", "산청군", 
+                final String[] gyoungnamList = new String[]{"거제시", "거창군", "고성군", "김해시", "남해군", "밀양시", "사천시", "산청군",
                         "양산시", "의령군", "진주시", "창녕군", "창원시", "창원시 마산합포구", "창원시 마산회원구", "창원시 성산구", "창원시 의창구",
                         "창원시 진해구", "통영시", "하동군", "함안군", "함양군", "합천군"};
 
@@ -216,9 +234,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
     void showDialog(String[] districtChoose) {
-        AlertDialog.Builder dlg2 = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder dlg2 = new AlertDialog.Builder(setting.this);
         dlg2.setTitle("시•군•구 선택");
         Button district = (Button) findViewById(R.id.district);
         dlg2.setItems(districtChoose, new DialogInterface.OnClickListener() {
@@ -236,4 +253,3 @@ public class MainActivity extends AppCompatActivity {
         dlg2.show();
     }
 }
-

@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ContentView;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -49,11 +50,12 @@ import java.text.SimpleDateFormat;
 public class RecordPage extends AppCompatActivity {
     EditText middle_number, end_number;
     TextView name, message;
-    Button city, district, finish;
+    Button city, district, finish, check;
     ImageButton setting;
     CheckBox agree_check;
+    Boolean temCheck;
+    String path;
 
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -66,7 +68,22 @@ public class RecordPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.record_page);
+        SharedPreferences sharedPreferences= getSharedPreferences("test", MODE_PRIVATE);    // test 이름의 기본모드 설정, 만약 test key값이 있다면 해당 값을 불러옴.
+        String password = sharedPreferences.getString("password", "");
+        String nameSet = sharedPreferences.getString("name","");
+        String messageSet = sharedPreferences.getString("message","");
+        String citySet = sharedPreferences.getString("city", "");
+        String districtSet = sharedPreferences.getString("district", "");
+        String temperature = sharedPreferences.getString("check", "");
+
+        Toast.makeText(this, "오늘도 즐거운 하루 되세요~!.", Toast.LENGTH_SHORT).show();
+        if(temperature.equals("발열체크 X")) {
+            temCheck = false;
+            setContentView(R.layout.record_page);
+        } else {
+            temCheck = true;
+            setContentView(R.layout.record_page_tem);
+        }
 
         if (!hasPermissions(this, PERMISSIONS_STORAGE)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, MULTIPLE_PERMISSION);
@@ -75,6 +92,7 @@ public class RecordPage extends AppCompatActivity {
 
         city = (Button) findViewById(R.id.city);
         district = (Button) findViewById(R.id.district);
+        check = (Button) findViewById(R.id.check);
         middle_number = (EditText) findViewById(R.id.middle_number);
         end_number = (EditText) findViewById(R.id.end_number);
         name = (TextView) findViewById(R.id.name);
@@ -83,25 +101,13 @@ public class RecordPage extends AppCompatActivity {
         finish = (Button) findViewById(R.id.finish);
         setting = (ImageButton) findViewById(R.id.setting);
 
-        //setting이랑 작성완료, 동의 체크 구현해야함
-
-        middle_number.setShowSoftInputOnFocus(false);
-        end_number.setShowSoftInputOnFocus(false);
-
-        SharedPreferences sharedPreferences= getSharedPreferences("test", MODE_PRIVATE);    // test 이름의 기본모드 설정, 만약 test key값이 있다면 해당 값을 불러옴.
-        String password = sharedPreferences.getString("password", "");
-        String nameSet = sharedPreferences.getString("name","");
-        String messageSet = sharedPreferences.getString("message","");
-        String citySet = sharedPreferences.getString("city", "");
-        String districtSet = sharedPreferences.getString("district", "");
         city.setText(citySet);
         district.setText(districtSet);
         name.setText(nameSet);    // TextView에 SharedPreferences에 저장되어있던 값 찍기.
         message.setText(messageSet);
-        Toast.makeText(this, "오늘도 즐거운 하루 되세요~!.", Toast.LENGTH_SHORT).show();
 
-
-
+        middle_number.setShowSoftInputOnFocus(false);
+        end_number.setShowSoftInputOnFocus(false);
 
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +135,7 @@ public class RecordPage extends AppCompatActivity {
                 dlg.show();
             }
         });
+        
 
         long delete = System.currentTimeMillis() - 28L*24*60*60*1000;
         Date deleteDate = new Date(delete);
@@ -136,9 +143,12 @@ public class RecordPage extends AppCompatActivity {
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         String delete1 = sdf2.format(deleteDate);
         File deletefile = new File("/storage/self/primary/Documents/Visitor/" + delete1 + " 방문객.txt");
+        File deletefile_tem = new File("/storage/self/primary/Documents/Visitor/" + delete1 + " 방문객(온도).txt");
         deletefile.delete();
+        deletefile_tem.delete();
 
         finish.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 File nFile = new File("/storage/self/primary/Documents/", "Visitor");
@@ -156,25 +166,55 @@ public class RecordPage extends AppCompatActivity {
                     Date date = new Date(now); // Date 객체 생성
                     @SuppressLint("SimpleDateFormat")
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String nowTime = sdf.format(date) + ".\n";
+                    String nowTime = sdf.format(date) + "..";
                     @SuppressLint("SimpleDateFormat")
                     SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
                     String nowDate = sdf1.format(date);
-                    String path = "/storage/self/primary/Documents/Visitor/" +nowDate + " 방문객.txt";
+                    if(!temCheck) {
+                        path = "/storage/self/primary/Documents/Visitor/" + nowDate + " 방문객.txt";
+                    } else {
+                        path = "/storage/self/primary/Documents/Visitor/" + nowDate + " 방문객(온도).txt";
+                    }
                     Log.d("GET", Environment.DIRECTORY_DOCUMENTS);
                     // 파일 생성
                     File savefile = new File(path);
+                    if(!temCheck) {
+
                         try {
                             FileOutputStream fos = new FileOutputStream(savefile, true);
                             fos.write(area.getBytes());
                             fos.write(number.getBytes());
-                            fos.write(nowTime.getBytes());
-                            //fos.write(\n);
+                            fos.write((nowTime + "\n").getBytes());
                             fos.close();
+                            city.setText(citySet);
+                            district.setText(districtSet);
+                            middle_number.setText("");
+                            end_number.setText("");
+                            agree_check.setChecked(false);
                             Toast.makeText(getApplicationContext(), "작성 완료했습니다.", Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             Log.d("ERROR", String.valueOf(e));
                         }
+                    } else {
+                        try {
+                            String temperature = check.getText().toString() + "..\n";
+                            FileOutputStream fos = new FileOutputStream(savefile, true);
+                            fos.write(area.getBytes());
+                            fos.write(number.getBytes());
+                            fos.write(nowTime.getBytes());
+                            fos.write(temperature.getBytes());
+                            fos.close();
+                            city.setText(citySet);
+                            district.setText(districtSet);
+                            middle_number.setText("");
+                            end_number.setText("");
+                            check.setText("37.1 이하");
+                            agree_check.setChecked(false);
+                            Toast.makeText(getApplicationContext(), "작성 완료했습니다.", Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            Log.d("ERROR", String.valueOf(e));
+                        }
+                    }
                     }
                 }
         });
@@ -195,6 +235,28 @@ public class RecordPage extends AppCompatActivity {
 
         middle_number.setInputType(EditorInfo.TYPE_NULL);
         end_number.setInputType(EditorInfo.TYPE_NULL);// setCursorVisible(false);
+
+        if(temCheck) {
+            check.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(RecordPage.this);
+                    dlg.setTitle("체온 선택"); //제목
+                    final String[] temList = new String[]{"37.1 이하", "37.1", "37.2", "37.3", "37.4", "37.5", "37.6", "37.7", "37.8", "37.9", "38.0",
+                            "38.1", "38.2", "38.3", "38.4", "38.5", "38.6", "38.7", "38.8", "38.9", "39.0",
+                            "39.1", "39.2", "39.3", "39.4", "39.5", "39.6", "39.7", "39.8", "39.9", "40.0 이상",};
+
+                    dlg.setItems(temList, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            check.setText(temList[which]);
+                            Toast.makeText(getApplicationContext(), temList[which] + " 선택", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dlg.show();
+                }
+            });
+        }
 
         city.setOnClickListener(new View.OnClickListener() {
 
