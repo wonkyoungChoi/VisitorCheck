@@ -32,7 +32,13 @@ public class admin extends AppCompatActivity {
     Button calendar;
     RecyclerView recyclerView;
     Boolean check;
-    String path;
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent intent = new Intent(getApplicationContext(), RecordPage.class);
+        startActivity(intent);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("SetTextI18n")
@@ -56,6 +62,8 @@ public class admin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                Intent intent = new Intent(getApplicationContext(), RecordPage.class);
+                startActivity(intent);
             }
         });
 

@@ -125,6 +125,7 @@ public class RecordPage extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(et.getText().toString().equals(password)) {
+                            finish();
                             Intent in = new Intent(getApplicationContext(), admin.class);
                             startActivity(in);
                         } else {
