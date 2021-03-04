@@ -179,13 +179,13 @@ public class admin extends AppCompatActivity {
                 String num = Integer.toString(i);
                 if(check) {
                     if(substringBetween(line, "..", "..") == null) {
-                        temperature = "X";
+                        temperature = "온도측정 X";
                     } else {
                         temperature = substringBetween(line, "..", "..");
                         Log.d("TEMPERATURE", temperature);
                     }
                 } else {
-                    temperature = "X";
+                    temperature = "온도측정 X";
                 }
                 item.setTemperature(temperature);
                 item.setNum(num);
