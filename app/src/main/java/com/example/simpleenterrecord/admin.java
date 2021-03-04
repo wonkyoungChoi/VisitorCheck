@@ -83,7 +83,6 @@ public class admin extends AppCompatActivity {
         calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("PATH", path);
                 showDate();
             }
         });
