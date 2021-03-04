@@ -20,6 +20,14 @@ public class setting extends AppCompatActivity {
     EditText password, name, message;
     Button city, district, start, temperature;
     ImageButton back;
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent intent = new Intent(getApplicationContext(), admin.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,11 +57,14 @@ public class setting extends AppCompatActivity {
         district.setText(districtSet);
         temperature.setText(temSet);
 
+
         back =  (ImageButton) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+                Intent intent = new Intent(getApplicationContext(), admin.class);
+                startActivity(intent);
             }
         });
 

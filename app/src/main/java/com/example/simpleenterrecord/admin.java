@@ -27,9 +27,7 @@ import java.util.Calendar;
 
 public class admin extends AppCompatActivity {
     ArrayList<Item> list = new ArrayList<>();
-    ArrayList<Item_tem> list_tem = new ArrayList<>();
     Item item;
-    Item_tem item_tem;
     ImageButton back, setting;
     Button calendar;
     RecyclerView recyclerView;
@@ -43,17 +41,16 @@ public class admin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPreferences= getSharedPreferences("test", MODE_PRIVATE);
         String temperature = sharedPreferences.getString("check", "");
+        setContentView(R.layout.admin);
 
         if(temperature.equals("발열체크 X")) {
             Log.d("tem", temperature);
             check = false;
-            setContentView(R.layout.admin);
+
         } else {
             check = true;
-            setContentView(R.layout.admin_tem);
         }
 
-        Log.d("CHECK", check.toString());
         back =  (ImageButton) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,21 +75,19 @@ public class admin extends AppCompatActivity {
         int mMonth = c.get(Calendar.MONTH) + 1;
         int mDay = c.get(Calendar.DAY_OF_MONTH);
 
+        String monthChange = monthChange(mMonth);
+        String dayChange = dayChange(mDay);
 
-        if(!check) {
-            path = " 방문객.txt";
-        } else {
-            path = " 방문객(온도).txt";
-        }
 
         calendar.setText(mYear + "/" + mMonth + "/" + mDay);
         calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("PATH", path);
-                showDate(path);
+                showDate();
             }
         });
+        String path = "/storage/self/primary/Documents/Visitor/" + mYear + "-" + monthChange + "-" + dayChange + " 방문객.txt";
         recycler(path);
 
     }
@@ -111,7 +106,7 @@ public class admin extends AppCompatActivity {
         return null;
     }
 
-    void showDate(String path2) {
+    void showDate() {
         final Calendar c = Calendar.getInstance(); //현재 시간을 얻음
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
@@ -127,8 +122,8 @@ public class admin extends AppCompatActivity {
                 calendar.setText(year + "/" + month + "/" + dayOfMonth);
                 String monthChange = monthChange(month);
                 String dayChange = dayChange(dayOfMonth);
-                String path1 = "/storage/self/primary/Documents/Visitor/" + year + "-" + monthChange + "-" + dayChange;
-                recycler(path1 + path2);
+                String path = "/storage/self/primary/Documents/Visitor/" + year + "-" + monthChange + "-" + dayChange + " 방문객.txt";
+                recycler(path);
             }
         }, mYear, mMonth, mDay);
         datePickerDialog.show();
@@ -156,8 +151,6 @@ public class admin extends AppCompatActivity {
 
     void recycler(String path) {
         list.clear();
-        list_tem.clear();
-        Log.d("TRUE", "true");
         try {
             FileInputStream fis = new FileInputStream(path);
             BufferedReader bReader = new BufferedReader(new InputStreamReader(fis));
@@ -165,10 +158,11 @@ public class admin extends AppCompatActivity {
             String phoneNum;
             String time;
             String city;
-            String temperature;
+            String temperature = "";
             int i = 1;
             while (line != null) {
-                item_tem = new Item_tem();
+                Log.d("CHECK", check.toString());
+                item = new Item();
                 city = substringBetween(line, "", " ,");
                 Log.d("CITY", city);
                 phoneNum = substringBetween(line, " ,", " .");
@@ -177,21 +171,26 @@ public class admin extends AppCompatActivity {
                 Log.d("TIME", time);
                 String num = Integer.toString(i);
                 if(check) {
-                    temperature = substringBetween(line, "..", "..");
-                    Log.d("TEMPERATURE", temperature);
-                    item_tem.setTemperature(temperature);
+                    if(substringBetween(line, "..", "..") == null) {
+                        temperature = "X";
+                    } else {
+                        temperature = substringBetween(line, "..", "..");
+                        Log.d("TEMPERATURE", temperature);
+                    }
+                } else {
+                    temperature = "X";
                 }
-
-                item_tem.setNum(num);
-                item_tem.setCity(city);
-                item_tem.setPhoneNum(phoneNum);
-                item_tem.setTime(time);
-                list_tem.add(item_tem);
+                item.setTemperature(temperature);
+                item.setNum(num);
+                item.setCity(city);
+                item.setPhoneNum(phoneNum);
+                item.setTime(time);
+                list.add(item);
                 line = bReader.readLine();
                 i++;
             }
             bReader.close();
-            for (Item_tem v : list_tem)
+            for (Item v : list)
                 Log.i("Array is ", String.valueOf(v));
         } catch (IOException e) {
             e.printStackTrace();
@@ -202,7 +201,7 @@ public class admin extends AppCompatActivity {
                 LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        Adapter_tem adapter = new Adapter_tem(list_tem);
+        Adapter adapter = new Adapter(list);
         recyclerView.setAdapter(adapter);
     }
 

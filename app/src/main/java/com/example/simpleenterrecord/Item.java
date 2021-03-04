@@ -5,13 +5,14 @@ public class Item {
     String time;
     String phoneNum;
     String city;
+    String temperature;
 
-    public Item(String num, String time, String phoneNum, String city) {
+    public Item(String num, String time, String phoneNum, String city, String temperature) {
         this.num = num;
         this.time = time;
         this.phoneNum = phoneNum;
         this.city = city;
-
+        this.temperature = temperature;
     }
     public Item(){};
 
@@ -47,4 +48,7 @@ public class Item {
         this.city = city;
     }
 
+    public String getTemperature() { return temperature; }
+
+    public void setTemperature(String temperature) { this.temperature = temperature; }
 }

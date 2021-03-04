@@ -143,9 +143,7 @@ public class RecordPage extends AppCompatActivity {
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         String delete1 = sdf2.format(deleteDate);
         File deletefile = new File("/storage/self/primary/Documents/Visitor/" + delete1 + " 방문객.txt");
-        File deletefile_tem = new File("/storage/self/primary/Documents/Visitor/" + delete1 + " 방문객(온도).txt");
         deletefile.delete();
-        deletefile_tem.delete();
 
         finish.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
@@ -170,16 +168,13 @@ public class RecordPage extends AppCompatActivity {
                     @SuppressLint("SimpleDateFormat")
                     SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
                     String nowDate = sdf1.format(date);
-                    if(!temCheck) {
-                        path = "/storage/self/primary/Documents/Visitor/" + nowDate + " 방문객.txt";
-                    } else {
-                        path = "/storage/self/primary/Documents/Visitor/" + nowDate + " 방문객(온도).txt";
-                    }
+
+                    path = "/storage/self/primary/Documents/Visitor/" + nowDate + " 방문객.txt";
+
                     Log.d("GET", Environment.DIRECTORY_DOCUMENTS);
                     // 파일 생성
                     File savefile = new File(path);
                     if(!temCheck) {
-
                         try {
                             FileOutputStream fos = new FileOutputStream(savefile, true);
                             fos.write(area.getBytes());

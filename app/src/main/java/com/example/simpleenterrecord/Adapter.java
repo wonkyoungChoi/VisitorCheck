@@ -17,7 +17,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스.
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView num, time, phoneNum, city ;
+        TextView num, time, phoneNum, city , tem;
 
         ViewHolder(View itemView) {
             super(itemView) ;
@@ -27,6 +27,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             time = itemView.findViewById(R.id.time);
             phoneNum = itemView.findViewById(R.id.phoneNum);
             city = itemView.findViewById(R.id.city);
+            tem = itemView.findViewById(R.id.temperature);
         }
 
         public void setItem(Item item) {
@@ -34,6 +35,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             time.setText(item.getTime());
             phoneNum.setText(item.getPhoneNum());
             city.setText(item.getCity());
+            tem.setText(item.getTemperature());
         }
     }
 

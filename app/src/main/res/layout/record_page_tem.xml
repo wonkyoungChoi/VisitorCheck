@@ -2,16 +2,16 @@
 <LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:background="#EEEEEE"
     android:weightSum="1"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
         android:orientation="vertical"
-        android:layout_weight="0.6"
-        android:layout_width="0dp"
+        android:layout_weight="0.5"
+        android:layout_width="match_parent"
         android:weightSum="1"
-        android:layout_height="match_parent">
+        android:layout_height="0dp">
 
         <LinearLayout
             android:layout_margin="5dp"
@@ -207,13 +207,13 @@
 
     </LinearLayout>
     <LinearLayout
-        android:layout_weight="0.4"
+        android:layout_weight="0.5"
         android:orientation="vertical"
         android:layout_margin="5dp"
         android:background="@drawable/round_corner"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:weightSum="4.7"
-        android:layout_height="match_parent">
+        android:layout_height="0dp">
         <LinearLayout
             android:layout_weight="1"
             android:layout_width="match_parent"
