@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     editor = sharedPreferences.edit(); //sharedPreferences를 제어할 editor를 선언
-                    if(password.getText().toString()!=null && name.getText().toString()!=null &&
-                            message.getText().toString()!=null && !district.getText().toString().equals("시•군•구 선택") && 
-                            !city.getText().toString().equals("시•도 선택") && !temperature.getText().toString().equals("발열체크 여부")) {
+                    password.getText().toString();
+                    name.getText().toString();
+                    if(!district.getText().toString().equals("시•군•구 선택") && !city.getText().toString().equals("시•도 선택") && !temperature.getText().toString().equals("발열체크 여부")) {
                         editor.putString("password", password.getText().toString());
                         editor.putString("name", name.getText().toString());
                         editor.putString("message", message.getText().toString());

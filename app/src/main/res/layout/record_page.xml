@@ -35,7 +35,7 @@
                     android:gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:text="전화번호"/>
                 <TextView
                     android:textColor="@color/black"
@@ -89,7 +89,7 @@
                     android:gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:text="거주지역"/>
                 <Button
                     android:textColor="@color/black"
@@ -129,7 +129,7 @@
                     android:gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:text="동의체크"/>
 
                 <CheckBox
